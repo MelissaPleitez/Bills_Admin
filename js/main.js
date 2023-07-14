@@ -86,7 +86,7 @@ class UI{
 
         if(type=== 'error'){
             div.classList.add('alert-danger')
-
+            
         }else{
             div.classList.add('alert-success')
         }
@@ -112,6 +112,30 @@ class UI{
 
     recalculating_remaining(remaining){
         document.querySelector('#remaining span').innerHTML= remaining
+    }
+
+
+    changing_bgcolor(main_budget){
+    const {remaining, budget}= main_budget
+     const restDiv= document.querySelector('#remaining')
+    if((budget/4)>remaining){
+        restDiv.classList.remove('alert-success', 'alert-warning')
+        restDiv.classList.add('alert-danger')
+    }else if((budget/2)>remaining){
+        restDiv.classList.remove('alert-success')
+        restDiv.classList.add('alert-warning')
+    }else{
+        restDiv.classList.remove('alert-danger', 'alert-warning')
+        restDiv.classList.add('alert-success')
+    }
+
+    if(remaining<=0){
+        ui.alerts('Your budget ran out', 'error')
+        form.querySelector('button[type="submit"]').disabled=true
+    }
+
+
+
     }
 
 }
@@ -143,20 +167,19 @@ if(expenses_name === '' || expenses_amount === ''){
 
     main_budget.adding_list_budget(new_expenses_list)
 
-    const {bills}= main_budget
-
-    ui.creating_list_HTM(bills)
-
     ui.alerts('Adding Expenses', 'good')
 
-    const {remaining}= main_budget
-
-    console.log(remaining)
-
-    ui.recalculating_remaining(remaining)
+    const {bills}= main_budget
+    ui.creating_list_HTM(bills)
 
     
-  form.reset()
+
+    ui.changing_bgcolor(main_budget)
+
+    const {remaining}= main_budget
+    ui.recalculating_remaining(remaining)
+
+    form.reset()
 }
 
 } 
@@ -166,11 +189,11 @@ function deleting_expenses(id){
 
     main_budget.removing_expenses(id)
 
-    const {bills}= main_budget
+    ui.changing_bgcolor(main_budget)
+
+    const {bills, remaining}= main_budget
 
     ui.creating_list_HTM(bills)
-
-    const {remaining}= main_budget
 
     ui.recalculating_remaining(remaining)
 
